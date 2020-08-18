@@ -46,6 +46,10 @@ export default class GithubAPI {
     return `https://github.com/${repo}/issues/`;
   }
 
+  public getBaseRepUrl(repo: string): string {
+    return `https://github.com/${repo}/`;
+  }
+
   public async getIssueData(repo: string, issue: string): Promise<GitHubIssueResponse> {
     return this._fetch(`https://api.github.com/repos/${repo}/issues/${issue}`);
   }

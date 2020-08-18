@@ -11,6 +11,7 @@ export interface Configuration {
   labels: { [key: string]: string };
   ignoreCommitters: string[];
   cacheDir?: string;
+  logPath?: string;
   nextVersion: string | undefined;
   nextVersionFromMetadata?: boolean;
 }

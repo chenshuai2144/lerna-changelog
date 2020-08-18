@@ -24,9 +24,11 @@ export default class Changelog {
     this.config = config;
     this.github = new GithubAPI(this.config);
     this.renderer = new MarkdownRenderer({
-      categories: Object.keys(this.config.labels).map(key => this.config.labels[key]),
+      categories: Object.keys(this.config.labels).map((key) => this.config.labels[key]),
       baseIssueUrl: this.github.getBaseIssueUrl(this.config.repo),
+      repoUrl: this.github.getBaseRepUrl(this.config.repo),
       unreleasedName: this.config.nextVersion || "Unreleased",
+      logPath: this.config.logPath,
     });
   }
 
@@ -73,7 +75,7 @@ export default class Changelog {
 
   private async getListOfUniquePackages(sha: string): Promise<string[]> {
     return (await Git.changedPaths(sha))
-      .map(path => this.packageFromPath(path))
+      .map((path) => this.packageFromPath(path))
       .filter(Boolean)
       .filter(onlyUnique);
   }
@@ -112,7 +114,7 @@ export default class Changelog {
       }
     }
 
-    return Object.keys(committers).map(k => committers[k]);
+    return Object.keys(committers).map((k) => committers[k]);
   }
 
   private ignoreCommitter(login: string): boolean {
@@ -120,7 +122,7 @@ export default class Changelog {
   }
 
   private toCommitInfos(commits: Git.CommitListItem[]): CommitInfo[] {
-    return commits.map(commit => {
+    return commits.map((commit) => {
       const { sha, refName, summary: message, date } = commit;
 
       let tagsInCommit;
@@ -131,8 +133,8 @@ export default class Changelog {
         // we need to treat all of them as a list.
         tagsInCommit = refName
           .split(", ")
-          .filter(ref => ref.startsWith(TAG_PREFIX))
-          .map(ref => ref.substr(TAG_PREFIX.length));
+          .filter((ref) => ref.startsWith(TAG_PREFIX))
+          .map((ref) => ref.substr(TAG_PREFIX.length));
       }
 
       const issueNumber = findPullRequestId(message);
@@ -192,7 +194,7 @@ export default class Changelog {
       }
     }
 
-    return Object.keys(releaseMap).map(tag => releaseMap[tag]);
+    return Object.keys(releaseMap).map((tag) => releaseMap[tag]);
   }
 
   private getToday() {
@@ -202,13 +204,17 @@ export default class Changelog {
 
   private fillInCategories(commits: CommitInfo[]) {
     for (const commit of commits) {
-      if (!commit.githubIssue || !commit.githubIssue.labels) continue;
+      const labels = [...(commit.githubIssue?.labels.map((label) => label.name.toLowerCase()) || [])];
 
-      const labels = commit.githubIssue.labels.map(label => label.name.toLowerCase());
+      if (commit.message.includes(":")) {
+        labels.push(commit.message?.split(":")[0]);
+      }
 
       commit.categories = Object.keys(this.config.labels)
-        .filter(label => labels.indexOf(label.toLowerCase()) !== -1)
-        .map(label => this.config.labels[label]);
+        .filter((label) => {
+          return labels?.indexOf(label.toLowerCase()) !== -1;
+        })
+        .map((label) => this.config.labels[label]);
     }
   }
 

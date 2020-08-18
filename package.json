@@ -33,6 +33,7 @@
     "watch": "yarn build -- --watch"
   },
   "dependencies": {
+    "@types/prettier": "^2.0.2",
     "chalk": "^2.4.1",
     "cli-highlight": "^2.1.4",
     "execa": "^1.0.0",
@@ -53,7 +54,7 @@
     "fs-extra": "^8.1.0",
     "jest": "^25.5.4",
     "jest-runner-eslint": "^0.7.6",
-    "prettier": "1.19.1",
+    "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.5.1",
     "typescript": "^3.9.2"
