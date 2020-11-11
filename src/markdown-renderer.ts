@@ -50,16 +50,17 @@ export default class MarkdownRenderer {
 
     const releaseTitle = release.name === UNRELEASED_TAG ? this.options.unreleasedName : release.name;
 
-    let markdown = `## ${releaseTitle}`;
-    markdown += `\n\n`;
+    let markdown = `## ${releaseTitle}\n`;
+    markdown += `\n`;
     markdown += `\`${release.date}\``;
-    markdown += `\n\n`;
+    markdown += `\n`;
 
     for (const category of categoriesWithCommits) {
-      markdown += `\n\n`;
+      markdown += `\n`;
       markdown += this.renderContributionList(category.commits);
-      markdown += "\n\n";
     }
+    markdown += "\n";
+
     return format(markdown, { parser: "markdown" });
   }
 
@@ -93,8 +94,8 @@ export default class MarkdownRenderer {
   public renderContributionList(commits: CommitInfo[], prefix: string = ""): string {
     return commits
       .map((commit) => this.renderContribution(commit))
-      .filter(Boolean)
-      .map((rendered) => `${prefix}* ${rendered}`)
+      .filter((name) => !!name?.trim())
+      .map((rendered) => `${prefix}- ${rendered}`)
       .join("\n");
   }
 
@@ -113,7 +114,7 @@ export default class MarkdownRenderer {
         markdown += `  [#${issue.number}](${prUrl}) `;
       }
       markdown += ` (@${issue.user.login}(${issue.user.html_url}))`;
-      return markdown;
+      return markdown.replace("- feat(", "- 💥 feat").replace("- fix(", "- 🐛 fix(");
     }
   }
 
