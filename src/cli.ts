@@ -1,12 +1,10 @@
 /* tslint:disable:no-console */
 
 import chalk from "chalk";
-
-import { highlight } from "cli-highlight";
-
 import Changelog from "./changelog";
 import { load as loadConfig } from "./configuration";
 import ConfigurationError from "./configuration-error";
+import { writeFileSync } from "fs";
 
 export async function run() {
   const yargs = require("yargs");
@@ -72,23 +70,13 @@ export async function run() {
 
     let result = await new Changelog(config).createMarkdown(options);
 
-    let highlighted = highlight(result, {
-      language: "Markdown",
-      theme: {
-        section: chalk.bold,
-        string: chalk.hex("#0366d6"),
-        link: chalk.dim,
-      },
-    });
-
-    console.log(highlighted);
+    writeFileSync(".changelog.md", result);
   } catch (e) {
     if (e instanceof ConfigurationError) {
       console.log(chalk.red(e.message));
     } else {
       console.log(chalk.red(e.stack));
     }
-
     process.exitCode = 1;
   }
 }

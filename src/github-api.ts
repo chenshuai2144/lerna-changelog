@@ -62,6 +62,7 @@ export default class GithubAPI {
       },
     });
     const parsedResponse = await res.json();
+
     if (res.ok) {
       return parsedResponse;
     }
