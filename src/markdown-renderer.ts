@@ -95,7 +95,6 @@ export default class MarkdownRenderer {
     return commits
       .map((commit) => this.renderContribution(commit))
       .filter((name) => !!name?.trim())
-      .map((rendered) => `${prefix}- ${rendered}`)
       .join("\n");
   }
 
@@ -103,7 +102,7 @@ export default class MarkdownRenderer {
     const issue = commit.githubIssue;
     if (issue) {
       let markdown = "";
-      markdown += `${issue.title}`;
+      markdown += `- ${issue.title}`.replace("- feat(", "- 💥 feat(").replace("- fix(", "- 🐛 fix(");
 
       if (issue.title && issue.title.match(COMMIT_FIX_REGEX)) {
         issue.title = issue.title.replace(COMMIT_FIX_REGEX, `Closes [#$3](${this.options.baseIssueUrl}$3)`);
@@ -113,8 +112,8 @@ export default class MarkdownRenderer {
         const prUrl = issue.pull_request.html_url;
         markdown += `  [#${issue.number}](${prUrl}) `;
       }
-      markdown += ` (@${issue.user.login}(${issue.user.html_url}))`;
-      return markdown.replace("- feat(", "- 💥 feat").replace("- fix(", "- 🐛 fix(");
+      markdown += ` [@${issue.user.login}](${issue.user.html_url})`;
+      return markdown;
     }
   }
 
