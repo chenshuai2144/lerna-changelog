@@ -1,6 +1,6 @@
 {
   "name": "pro-changelog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate a changelog for a lerna monorepo",
   "keywords": [
     "changelog",
@@ -40,9 +40,9 @@
     "yargs": "^13.0.0"
   },
   "devDependencies": {
-    "@types/prettier": "^2.1.5",
     "@types/jest": "^25.2.3",
     "@types/node": "^13.13.4",
+    "@types/prettier": "^2.1.5",
     "fs-extra": "^8.1.0",
     "prettier": "^2.1.2",
     "rimraf": "^3.0.2",
