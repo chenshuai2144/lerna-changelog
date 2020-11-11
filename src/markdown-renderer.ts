@@ -102,7 +102,7 @@ export default class MarkdownRenderer {
     const issue = commit.githubIssue;
     if (issue) {
       let markdown = "";
-      markdown += `${issue.title} ([@${issue.user.login}](${issue.user.html_url}))`;
+      markdown += `${issue.title}`;
 
       if (issue.title && issue.title.match(COMMIT_FIX_REGEX)) {
         issue.title = issue.title.replace(COMMIT_FIX_REGEX, `Closes [#$3](${this.options.baseIssueUrl}$3)`);
@@ -110,8 +110,9 @@ export default class MarkdownRenderer {
 
       if (issue.number && issue.pull_request && issue.pull_request.html_url) {
         const prUrl = issue.pull_request.html_url;
-        markdown += `[#${issue.number}](${prUrl}) `;
+        markdown += `  [#${issue.number}](${prUrl}) `;
       }
+      markdown += ` (@${issue.user.login}(${issue.user.html_url}))`;
       return markdown;
     }
   }

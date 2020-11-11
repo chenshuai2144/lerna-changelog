@@ -69,8 +69,11 @@ export async function run() {
     }
 
     let result = await new Changelog(config).createMarkdown(options);
-
-    writeFileSync(".changelog.md", result);
+    if (result.trim()) {
+      writeFileSync(".changelog.md", result);
+    } else {
+      console.log(chalk.red("没有找到日志！"));
+    }
   } catch (e) {
     if (e instanceof ConfigurationError) {
       console.log(chalk.red(e.message));
